@@ -8,6 +8,11 @@ import (
 )
 
 func main() {
+	builtInCommands := map[string]interface{}{
+		"echo": true,
+		"exit": true,
+		"type": true,
+	}
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 		command, _ := bufio.NewReader(os.Stdin).ReadString('\n')
@@ -17,6 +22,13 @@ func main() {
 			return
 		case strings.Contains(command, "echo "):
 			fmt.Println(strings.TrimPrefix(command, "echo "))
+		case strings.Contains(command, "type "):
+			check := strings.TrimPrefix(command, "type ")
+			if _,exists := builtInCommands[check]; exists{
+				fmt.Printf("%s is a shell builtin\n",check)
+			}else{
+				fmt.Printf("%s: not found\n", check)
+			}
 		default:
 			fmt.Printf("%s: command not found\n", command)
 		}
