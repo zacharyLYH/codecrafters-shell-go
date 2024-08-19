@@ -58,8 +58,7 @@ func main() {
 			dir := strings.TrimPrefix(command, "cd ")
 			err := os.Chdir(dir)
 			if err != nil {
-				fmt.Println("Error changing working directory:", err)
-				return
+				fmt.Printf("cd: %s: No such file or directory\n", dir)
 			}
 		default:
 			splitCommand := strings.Split(command, " ")
@@ -70,12 +69,6 @@ func main() {
 			if err != nil {
 				fmt.Printf("%s: command not found\n", splitCommand[0])
 			}
-			// output, err := command.Output()
-			// if err != nil {
-			// 	fmt.Println(err)
-			// } else {
-			// 	fmt.Printf("%s\n", string(output))
-			// }
 		}
 	}
 }
