@@ -12,4 +12,7 @@ func main() {
 
 	// Wait for user input
 	bufio.NewReader(os.Stdin).ReadString('\n')
+
+	fmt.Println("nonexistent: command not found")
+
 }
