@@ -11,6 +11,7 @@ import (
 func checkIfIsExecutable(name string, paths []string) string {
 	for _, p := range paths{
 		exec := p + "/" + name
+		fmt.Println(exec)
 		if _, err := os.Stat(exec); err == nil {
 			return exec
 		}
