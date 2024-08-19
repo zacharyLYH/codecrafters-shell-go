@@ -4,8 +4,19 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
+
+func checkIfIsExecutable(name string, paths []string) string {
+	for _, p := range paths{
+		exec := p + "/" + name
+		if _, err := os.Stat(exec); err == nil {
+			return exec
+		}
+	}
+	return ""
+}
 
 func main() {
 	builtInCommands := map[string]interface{}{
@@ -28,21 +39,28 @@ func main() {
 			if _,exists := builtInCommands[check]; exists{
 				fmt.Printf("%s is a shell builtin\n",check)
 			}else{
-				isExecutable := false
-				for _, p := range paths{
-					exec := p + "/" + check
-					if _, err := os.Stat(exec); err == nil {
-						fmt.Fprintf(os.Stdout, "%v is %v\n", check, exec)
-						isExecutable = true
-						break
-					}
-				}
-				if !isExecutable{
+				executablePath := checkIfIsExecutable(check, paths)
+				if executablePath == ""{
 					fmt.Printf("%s: not found\n", check)
+				} else {
+					fmt.Fprintf(os.Stdout, "%v is %v\n", check, executablePath)
 				}
 			}
 		default:
-			fmt.Printf("%s: command not found\n", command)
+			progName := os.Args[0]
+			executablePath := checkIfIsExecutable(progName, paths)
+			if executablePath == ""{
+				fmt.Printf("%s: not found\n", progName)
+			} else {
+				args := os.Args[1:]
+				cmd := exec.Command(progName, args...)
+				cmd.Stdin = os.Stdin
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+				if err := cmd.Run(); err != nil {
+					fmt.Printf("Error executing command: %v\n", err)
+				}
+			}
 		}
 	}
 }
