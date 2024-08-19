@@ -22,6 +22,7 @@ func main() {
 	builtInCommands := map[string]interface{}{
 		"echo": true,
 		"exit": true,
+		"pwd": true,
 		"type": true,
 	}
 	paths := strings.Split(os.Getenv("PATH"), ":")
@@ -46,6 +47,13 @@ func main() {
 					fmt.Fprintf(os.Stdout, "%v is %v\n", check, executablePath)
 				}
 			}
+		case strings.Contains(command, "pwd"):
+			pwd, err := os.Getwd()
+			if err != nil {
+				fmt.Println("Error getting current working directory:", err)
+				return
+			}
+		fmt.Println(pwd)
 		default:
 			splitCommand := strings.Split(command, " ")
 			command := exec.Command(splitCommand[0], splitCommand[1:]...)
