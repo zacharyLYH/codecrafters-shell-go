@@ -53,7 +53,14 @@ func main() {
 				fmt.Println("Error getting current working directory:", err)
 				return
 			}
-		fmt.Println(pwd)
+			fmt.Println(pwd)
+		case strings.Contains(command, "cd "):
+			dir := strings.TrimPrefix(command, "cd ")
+			err := os.Chdir(dir)
+			if err != nil {
+				fmt.Println("Error changing working directory:", err)
+				return
+			}
 		default:
 			splitCommand := strings.Split(command, " ")
 			command := exec.Command(splitCommand[0], splitCommand[1:]...)
