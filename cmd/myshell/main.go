@@ -12,10 +12,13 @@ func main() {
 		fmt.Fprint(os.Stdout, "$ ")
 		command, _ := bufio.NewReader(os.Stdin).ReadString('\n')
 		command = strings.TrimSpace(command)
-		switch command{
-			case "exit 0":
-				return
+		switch {
+		case command == "exit 0":
+			return
+		case strings.Contains(command, "echo "):
+			fmt.Println(strings.TrimPrefix(command, "echo "))
+		default:
+			fmt.Printf("%s: command not found\n", command)
 		}
-		fmt.Printf("%s: command not found\n", command)
 	}
 }
