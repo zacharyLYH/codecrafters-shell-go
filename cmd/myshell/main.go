@@ -11,7 +11,6 @@ import (
 func checkIfIsExecutable(name string, paths []string) string {
 	for _, p := range paths{
 		exec := p + "/" + name
-		fmt.Println(exec)
 		if _, err := os.Stat(exec); err == nil {
 			return exec
 		}
@@ -48,20 +47,20 @@ func main() {
 				}
 			}
 		default:
-			progName := os.Args[0]
-			executablePath := checkIfIsExecutable(progName, paths)
-			if executablePath == ""{
-				fmt.Printf("%s: not found\n", progName)
-			} else {
-				args := os.Args[1:]
-				cmd := exec.Command(progName, args...)
-				cmd.Stdin = os.Stdin
-				cmd.Stdout = os.Stdout
-				cmd.Stderr = os.Stderr
-				if err := cmd.Run(); err != nil {
-					fmt.Printf("Error executing command: %v\n", err)
-				}
+			splitCommand := strings.Split(command, " ")
+			command := exec.Command(splitCommand[0], splitCommand[1:]...)
+			command.Stderr = os.Stderr
+			command.Stdout = os.Stdout
+			err := command.Run()
+			if err != nil {
+				fmt.Printf("%s: command not found\n", splitCommand[0])
 			}
+			// output, err := command.Output()
+			// if err != nil {
+			// 	fmt.Println(err)
+			// } else {
+			// 	fmt.Printf("%s\n", string(output))
+			// }
 		}
 	}
 }
