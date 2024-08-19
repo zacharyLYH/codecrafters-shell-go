@@ -56,9 +56,21 @@ func main() {
 			fmt.Println(pwd)
 		case strings.Contains(command, "cd "):
 			dir := strings.TrimPrefix(command, "cd ")
-			err := os.Chdir(dir)
-			if err != nil {
-				fmt.Printf("cd: %s: No such file or directory\n", dir)
+			if dir == "~"{
+				home, err := os.UserHomeDir()
+				if err != nil {
+					fmt.Println("Error getting home directory:", err)
+				} else {
+					err = os.Chdir(home)
+					if err != nil {
+						fmt.Println("cd: Error changing to home directory:", err)
+					}
+				}
+			}else {
+				err := os.Chdir(dir)
+				if err != nil {
+					fmt.Printf("cd: %s: No such file or directory\n", dir)
+				}
 			}
 		default:
 			splitCommand := strings.Split(command, " ")
