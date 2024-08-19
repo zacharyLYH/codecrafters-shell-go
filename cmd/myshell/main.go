@@ -13,6 +13,7 @@ func main() {
 		"exit": true,
 		"type": true,
 	}
+	paths := strings.Split(os.Getenv("PATH"), ":")
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 		command, _ := bufio.NewReader(os.Stdin).ReadString('\n')
@@ -27,7 +28,18 @@ func main() {
 			if _,exists := builtInCommands[check]; exists{
 				fmt.Printf("%s is a shell builtin\n",check)
 			}else{
-				fmt.Printf("%s: not found\n", check)
+				isExecutable := false
+				for _, p := range paths{
+					exec := p + "/" + check
+					if _, err := os.Stat(exec); err == nil {
+						fmt.Fprintf(os.Stdout, "%v is %v\n", check, exec)
+						isExecutable = true
+						break
+					}
+				}
+				if !isExecutable{
+					fmt.Printf("%s: not found\n", check)
+				}
 			}
 		default:
 			fmt.Printf("%s: command not found\n", command)
